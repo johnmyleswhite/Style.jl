@@ -303,7 +303,7 @@ code, but the numbering is not yet finalized.
 
 # Comments
 
-(31) Minimize comments. Focus on writing code that makes sense by using informative variable names and simple constructions. *Never be clever*.
+(31) Avoid overcommenting code. Focus on writing code that makes sense by using informative variable names and simple constructions. If you need to document a non-trivial algorithm or data structure, move that documentation into a specification file where it can be formatted nicely with diagrams and other information. English language documents are much more readable when they're not constrained by the rules for code comments.
 
 (32) Write separate specification documentation for non-obvious algorithms.
 
@@ -328,3 +328,5 @@ Julia often gives you more freedom than you should use. Here are some guidelines
     median(x::MyNewType) = 1.0
 
 (34) Always use `for x in y`. Never use `for x = y`.
+
+(35) Always initialize `BigFloat` objects using a string literal, not a floating point literal. The floating point literal has low precision, which will be propagated to the `BigFloat`.
