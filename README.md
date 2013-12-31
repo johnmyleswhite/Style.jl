@@ -1,15 +1,25 @@
 Style.jl
 ========
 
-This document lays out, in a very rough draft, the style guidelines for Julia programming that I've started to impose on myself. I'd ask that anyone making contributions to my packages consider following these guidelines as well.
+This document lays out, in a very rough draft form, the style guidelines
+for Julia programming that I've started to impose on myself. I'd ask that
+anyone making contributions to my packages consider following these
+guidelines as well.
+
+These guidelines are designed to encourage writing highly readable code
+that performs well. They make explicit what I personally think is good
+style.
+
+They are numbered to make them easier to reference in a discussion of
+code, but the numbering is not yet finalized.
 
 # Naming Files and Packages
 
-(1) File names end in `.jl`
+(1) File names end in `.jl`, except for shell scripts which should not have any explicit file type extension.
 
-(2) GitHub repo names end in `.jl`
+(2) GitHub repo names end in `.jl`.
 
-(3) Package names *do not* end in `.jl`
+(3) Package names *do not* end in `.jl`.
 
 # Whitespace and Line Breaks
 
@@ -35,9 +45,11 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
       return x
     end
 
-(5) Never use tabs instead of space characters
+(5) Never use tabs instead of space characters as whitespace in code.
 
-(6) Always include a single space after a comma:
+(6) Never place more than 80 characters on a line.
+
+(7) Always include a single space after a comma:
 
 **Good style**
 
@@ -47,7 +59,7 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 
     x[1,2]
 
-(6) Never use a space before a comma:
+(8) Never insert a space before a comma:
 
 **Good style**
 
@@ -56,18 +68,33 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 **Bad style**
 
     x[1 , 2]
+    x[1 ,2]
 
-(7) Always place a single space before and after an operator:
+(9) Always insert a single space before and after an operator, except for the `^` and `:` operators, which never have spaces around them:
 
 **Good style**
 
     1 + 1
+    1^2
+    1:5
 
 **Bad style**
 
     1+1
+    1 ^ 2
+    1 : 5
 
-(8) Use explicit parentheses with the `:` operator in complex expressions. Do not rely upon Matlab-like precedence rules.
+(10) Contrary to many other style guidelines, the spacing before-and-after rule applies to keyword arguments as well:
+
+**Good style**
+
+    foo(a = 1)
+
+**Bad style**
+
+    foo(a=1)
+
+(11) Use explicit parentheses with the `:` operator in complex expressions. Do not rely upon Matlab-like precedence rules.
 
 **Good style**
 
@@ -77,11 +104,9 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 
     1:n - 1
 
-(9) Never place more than 80 characters on a line
-
 # Naming Conventions
 
-(9) For variables and functions, use short lowercase names whenever possible:
+(12) When naming variables or functions, use short lowercase names if possible:
 
 **Good style**
 
@@ -91,7 +116,7 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 
     isNotAvailable, is_not_available
 
-(10) If a variable or function name is long, use underscores:
+(13) If a variable or function name is too long to be read in all lowercase, insert underscores at word boundaries:
 
 **Good style**
 
@@ -101,7 +126,7 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 
     lookupTable, LookupTable
 
-(11) Both mutable and immutable types use initial-cap camelcase:
+(14) When naming mutable or immutable types, use initial-cap camelcase:
 
 **Good style**
 
@@ -132,13 +157,16 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
         val2::Float64
     end
 
-(12) Modules use initial-cap camelcase:
+(15) When naming modules, including packages, use initial-cap camelcase, except for acronyms, for which all letters should be capitalized:
 
 **Good style**
 
     module MyModule
         foo(x::Any) = 1
     end
+
+    using MyPackage
+    using GLM
 
 **Bad style**
 
@@ -150,7 +178,12 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
         foo(x::Any) = 1
     end
 
-(13) Constants use all caps:
+    using my_package
+    using myPackage
+    using Glm
+    using glm
+
+(16) When naming constants, use all caps:
 
 **Good style**
 
@@ -163,33 +196,9 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
     const magicNumber = 1
     const MagicNumber = 1
 
-# Mathematical Operations
+# Mathematical Notation
 
-(14) All binary operators, except `^`, must have a space before and after the operator:
-
-**Good style**
-
-    x + y
-    1.0 + 3.4
-    3^4
-
-**Bad style**
-
-    x+y
-    1.0+3.4
-    3 ^ 4
-
-(15) Contrary to many other style guidelines, this rule applies to keyword arguments as well:
-
-**Good style**
-
-    foo(a = 1)
-
-**Bad style**
-
-    foo(a=1)
-
-(16) Always add explicit zeros to the ends of floating point constants:
+(17) Always add explicit zeros to the ends of floating point constants:
 
 **Good style**
     1.0 + 2.0
@@ -199,7 +208,7 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 
 # The Type System
 
-(17) Always explicitly type all arguments to a function. Explicit typing makes code safer and clearer:
+(18) Always explicitly type all arguments to a function. Explicit typing makes code safer to use and clearer to an unfamiliar user:
 
 **Good style**
 
@@ -209,53 +218,113 @@ This document lays out, in a very rough draft, the style guidelines for Julia pr
 
     foo(x, y; z = 1) = x + y + z
 
-(18) When the desired types for a function are totally generic, use an explicit `Any`. Make it clear that you intended for your code to work with any type of input.
-
-(19) Don't explicitly parameterize types unless it's necessary to ensure correctness:
+(19) When the desired types for a function are too generic to be tightly typed in Julia, use an explicit `Any`. This makes it clear that you intended for your code to work with any type of input.
 
 **Good style**
 
+    screamcase(x::Any) = uppercase(string(x))
+
+**Bad style**
+
+    screamcase(x) = uppercase(string(x))
+
+(20) Don't explicitly introduce a parametric type rule for a function unless it's needed to ensure correctness:
+
+**Good style**
+
+    foo(x::String) = print(x)
     foo(x::Vector) = print(x)
     foo{T <: Real}(x::Vector{T}) = sum(x)
 
 **Bad style**
 
+    foo{T <: String}(x::T) = print(x)
     foo{T <: Any}(x::Vector{T}) = print(x)
 
-(20) Order method definitions from most specific to least specific type constraints.
+(21) Try to order method definitions from least specific to most specific type constraints.
+
+**Good style**
+
+    foo(x::Any) = print(x)
+    foo(x::String) = print(uppercase(x))
+
+**Bad style**
+
+    foo(x::String) = print(uppercase(x))
+    foo(x::Any) = print(x)
 
 # Peformance
 
-(21) Avoid creating temporary arrays, especially in loops
+(22) Avoid creating temporary arrays, especially in loops.
 
-(22) Ensure that functions return a single type for each type signature of inputs
+(23) Ensure that functions return a single type for each type signature of inputs.
+
+(24) Ensure that the type of any variable's binding does not change over the body of a function.
 
 # Code Organization
 
-(23) Most code should exist in a package, except for isolated scripts
+(25) Most code should exist in a package, except for isolated scripts. Make ad hoc packages to organize your own work.
 
-(24) Obey the package organization rules
+(26) When writing packages, obey the package organization rules by placing code in `src` and tests in `test`.
 
 # Testing
 
-(25) Always write a separate test file for every source file you write.
+(27) Always write a separate test file for every source file you write. Specifically, place the tests for `src/foo.jl` in `test/foo.jl`.
 
-(26) Place tests for `src/foo.jl` in `test/foo.jl`.
-
-(27) The contents of `test/foo.jl` should be surrounded by a module:
+(28) The contents of `test/foo.jl` should be surrounded by a module to keep variables from leaking out:
 
 **Good style**
 
     module TestFoo
-        # MAGIC HAPPENS HERE
+        @assert foo
     end
 
-(28) Test the functionality of `src/foo.jl` by writing at least one test for every type/function definition in `src/foo.jl`. Ensure systematic code coverage.
+**Bad style**
 
-(29) Avoid explicit types for variables inside code unless there is potential for bugs that you need to catch.
+    @assert foo
+
+(29) Test the functionality of `src/foo.jl` by writing at least one test for every type/function definition in `src/foo.jl`. Ensure systematic code coverage.
+
+(30) Avoid explicit types for variables inside code unless there is potential for bugs that you need to catch.
+
+**Good style**
+
+    function foo()
+        x = 1
+        return x
+    end
+
+**Bad style**
+
+    function foo()
+        x::Int = 1
+        return x
+    end
 
 # Comments
 
-(30) Minimize comments. Write code that makes sense.
+(31) Minimize comments. Focus on writing code that makes sense by using informative variable names and simple constructions. *Never be clever*.
 
-(31) Write separate specification documentation for non-obvious algorithms.
+(32) Write separate specification documentation for non-obvious algorithms.
+
+# Be Conservative
+
+Julia often gives you more freedom than you should use. Here are some guidelines for exhibiting self-control in the face of temptation.
+
+(33) Don't use `importall`. Don't even use `import`. Explicitly annotate the source of each extended function at the point of extension:
+
+**Good style**
+
+    Base.mean(x::MyNewType) = 1.0
+
+**Bad style**
+
+    import Base.median
+    median(x::MyNewType) = 1.0
+
+**Worst style**
+
+    importall Base
+    median(x::MyNewType) = 1.0
+
+(34) Always use `for x in y`. Never use `for x = y`.
