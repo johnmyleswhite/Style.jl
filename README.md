@@ -27,20 +27,20 @@ code, but the numbering is not yet finalized.
 
 **Good style**
 
-    function foo(n::Integer)
+    function foo(n::Array)
         x = 0
-        for i in 1:n
-            x += i
+        for i in n
+            x += n[i]
         end
         return x
     end
 
 **Bad style**
 
-    function foo(n::Integer)
+    function foo(n::Array)
       x = 0
-      for i in 1:n
-        x += i
+      for i in n
+        x += n[i]
       end
       return x
     end
