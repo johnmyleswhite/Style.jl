@@ -1,6 +1,9 @@
 Style.jl
 ========
 
+UPDATE: Please see the Julia Docs Style Guide: https://docs.julialang.org/en/stable/manual/style-guide/ <br> This repository hasn't been updated in many years. Where it differs, prefer the Julia Docs guide, above.
+------------
+
 This document lays out, in a very rough draft form, the style guidelines
 for Julia programming that I've started to impose on myself. I'd ask that
 anyone making contributions to my packages consider following these
